@@ -2,4 +2,9 @@
 
 @layer base {
   @import "./minireset.min.css";
+
+  body {
+    font-family:
+      var(--font-roboto), var(--font-noto-sans-kr), dotum, 돋움, sans-serif;
+  }
 }
