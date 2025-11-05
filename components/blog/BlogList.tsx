@@ -1,9 +1,9 @@
-import BlogItem, { BlogPostItem } from "./BlogItem";
+import BlogItem, { IBlogPostItem } from "./BlogItem";
 
-export type BlogListItem = BlogPostItem;
+export type IBlogListItem = IBlogPostItem;
 
 export interface BlogListProps {
-  items: BlogListItem[];
+  items: IBlogListItem[];
 }
 
 export default function BlogList({ items }: BlogListProps) {

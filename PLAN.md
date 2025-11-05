@@ -50,6 +50,18 @@
 - `on + 동작`: `onClick`, `onSubmit`
 - `on + 대상 + 동작`: `onOpenChange`, `onModalVisibilityChange`
 
+### 함수 작성 규칙
+
+- 함수를 먼저 선언하고, 마지막에 `export default`
+
+```tsx
+function MyComponent() {
+  return <div>Hello</div>;
+}
+
+export default MyComponent;
+```
+
 ### 예시
 
 ```tsx
