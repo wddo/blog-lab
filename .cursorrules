@@ -1,12 +1,4 @@
-# Product Lab - plan
-
-## 목표
-
-**Next.js App Router를 사용한 상품 목록과 상세 페이지 구현**
-
-- 서버 컴포넌트로 첫 페이지 SSR 렌더링
-- 클라이언트 컴포넌트로 무한 스크롤
-- 상세에서 히스토리 백 시 캐싱된 데이터로 즉시 렌더링
+# .cursorrules
 
 ## 코드 컨벤션
 
@@ -52,6 +44,8 @@
 
 ### 함수 작성 규칙
 
+**컴포넌트 선언**
+
 - 함수를 먼저 선언하고, 마지막에 `export default`
 
 ```tsx
@@ -62,16 +56,26 @@ function MyComponent() {
 export default MyComponent;
 ```
 
-### 예시
+**컴포넌트 내부 함수**
+
+- 기본적으로 `const` 화살표 함수 사용
 
 ```tsx
-// 내부 핸들러
-<button onClick={handleClick} />
-<input onChange={handleInputChange} />
+function MyComponent() {
+  const handleClick = () => { ... };
 
-// 외부 콜백
-<Modal onOpenChange={handleOpenChange} />
-<Dialog onVisibilityChange={handleVisibilityChange} />
+  return <button onClick={handleClick}>Click</button>;
+}
+```
+
+**컴포넌트 외부 함수**
+
+- 유틸리티 함수, 헬퍼 함수 등은 `function` 선언식 사용
+
+```tsx
+function calculateTotal(items: Item[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
 ```
 
 ## 코드 작성 컨셉
