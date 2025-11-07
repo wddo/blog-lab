@@ -7,4 +7,19 @@
     font-family:
       var(--font-roboto), var(--font-noto-sans-kr), dotum, 돋움, sans-serif;
   }
+
+  button {
+    cursor: pointer;
+  }
+
+  /* spinner animation */
+  .spinner_P7sC {
+    transform-origin: center;
+    animation: spinner_svv2 0.75s infinite linear;
+  }
+  @keyframes spinner_svv2 {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 }

@@ -2,19 +2,7 @@ import InteractionButtons from "@/components/blog/_internal/InteractionButtons";
 import CommentBox from "@/components/blog/commnet/CommentBox";
 import CommentList from "@/components/blog/commnet/CommentList";
 import ImageList from "@/components/blog/image/ImageList";
-
-export interface IComment {
-  id: string;
-  author: string;
-  content: string;
-}
-
-export interface IBlogPostItem {
-  id: string;
-  title: string;
-  imageUrl?: string[];
-  content: string;
-}
+import { IBlogPostItem } from "@/types/blog";
 
 export interface BlogItemProps {
   item: IBlogPostItem;

@@ -1,17 +1,19 @@
-import BlogItem, { IBlogPostItem } from "./BlogItem";
-
-export type IBlogListItem = IBlogPostItem;
+import { IBlogPostItem } from "@/types/blog";
+import { Suspense } from "react";
+import BlogItem from "./BlogItem";
 
 export interface BlogListProps {
-  items: IBlogListItem[];
+  items: IBlogPostItem[];
 }
 
 export default function BlogList({ items }: BlogListProps) {
   return (
     <section className="space-y-10">
-      {items.map((item) => (
-        <BlogItem key={item.id} item={item} />
-      ))}
+      <Suspense fallback={<div>Loading...</div>}>
+        {items.map((item) => (
+          <BlogItem key={item.id} item={item} />
+        ))}
+      </Suspense>
     </section>
   );
 }

@@ -1,0 +1,74 @@
+"use server";
+
+import { IBlogPostItem, IComment } from "@/types/blog";
+import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
+
+export async function getPosts(): Promise<IBlogPostItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("posts").select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data || [];
+}
+
+export async function addComment(formData: FormData) {
+  const content = formData.get("comment-area") as string;
+  const postId = formData.get("post_id") as string;
+
+  if (!content?.trim()) {
+    return { error: "Content is required" };
+  }
+
+  if (!postId) {
+    return { error: "Post ID is required" };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("comments")
+    .insert({
+      post_id: postId,
+      author: "tester",
+      content,
+    })
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/blog");
+}
+
+export async function getComments(postId: string): Promise<IComment[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("comments")
+    .select("*")
+    .eq("post_id", postId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data || [];
+}
+
+export async function deleteComment(commentId: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", commentId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/blog");
+}
