@@ -9,7 +9,7 @@ export interface BlogListProps {
 export default function BlogList({ items }: BlogListProps) {
   return (
     <section className="space-y-10">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>리스트 로딩중...</div>}>
         {items.map((item) => (
           <BlogItem key={item.id} item={item} />
         ))}

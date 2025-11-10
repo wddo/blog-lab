@@ -55,7 +55,7 @@ function CommentBox({ postId }: CommentBoxProps) {
             placeholder="댓글을 입력하세요"
           />
           <div className="mt-3 flex justify-end">
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="text-sm">
               {isPending ? "등록중..." : "댓글 등록"}
             </Button>
           </div>

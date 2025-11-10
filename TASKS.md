@@ -33,6 +33,6 @@ blog-lab/
 - [x] 댓글 작성 폼 핸들러 연결
 - [ ] 댓글 CRUD API 구현
 - [ ] 글 CRUD API 구현
-- [ ] cacheLife 이용한 댓글 stale 정책 적용
+- [ ] cacheTag 이용한 댓글 stale 정책 적용
 - [ ] revalidateTag 통해 캐시 즉시 무효화 확인
 - [ ] next/fetch 의 cache 속성을 이용해 최신성 중요도가 떨어지는 조회수 캐싱

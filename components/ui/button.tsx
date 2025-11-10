@@ -29,7 +29,7 @@ function Button(props: IButtonProps) {
   return (
     <button
       type={type}
-      className={`rounded-md px-4 py-2 text-sm ${variantStyles[variant]} ${className}`}
+      className={`flex items-center rounded-md p-2 ${variantStyles[variant]} ${className}`}
       onClick={onClick}
       disabled={disabled}
       {...rest}
