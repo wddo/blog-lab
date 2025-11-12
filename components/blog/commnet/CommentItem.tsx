@@ -45,7 +45,7 @@ function CommentItem({ comment }: ICommentItemProps) {
             {comment.author[0]?.toUpperCase() || "U"}
           </span>
         </div>
-        <div className="flex-1 rounded-md">
+        <div className="flex-1">
           <div className="mb-1 text-xs text-neutral-500">{comment.author}</div>
           <div className="text-sm leading-relaxed whitespace-pre-wrap">
             {comment.content}

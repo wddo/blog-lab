@@ -1,8 +1,10 @@
 import InteractionButtons from "@/components/blog/_internal/InteractionButtons";
 import CommentBox from "@/components/blog/commnet/CommentBox";
 import CommentList from "@/components/blog/commnet/CommentList";
+import CommentListSkeleton from "@/components/blog/commnet/skeleton/CommentListSkeleton";
 import ImageList from "@/components/blog/image/ImageList";
 import { IBlogPostItem } from "@/types/blog";
+import { Suspense } from "react";
 
 export interface BlogItemProps {
   item: IBlogPostItem;
@@ -24,7 +26,10 @@ function BlogItem({ item }: BlogItemProps) {
         <InteractionButtons />
 
         <CommentBox postId={id} />
-        <CommentList postId={id} />
+
+        <Suspense fallback={<CommentListSkeleton />}>
+          <CommentList postId={id} />
+        </Suspense>
       </div>
     </article>
   );
