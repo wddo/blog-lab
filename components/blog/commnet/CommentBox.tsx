@@ -1,15 +1,17 @@
+"use client";
+
 import CommentTextArea from "@/components/blog/_internal/CommentTextArea";
 import SubmitButton from "@/components/blog/_internal/SubmitButton";
-import { getUser } from "@/lib/auth/actions";
+import { useUser } from "@/hooks/useUser";
 import { insertComment } from "@/lib/blog/actions";
 
 interface CommentBoxProps {
   postId: string;
 }
 
-async function CommentBox({ postId }: CommentBoxProps) {
-  const user = await getUser();
-  const author = user?.email?.split("@")[0] ?? "anonymous";
+function CommentBox({ postId }: CommentBoxProps) {
+  const { author: authorName } = useUser();
+  const author = authorName ?? "anonymous";
   const avatar = author.charAt(0).toUpperCase();
 
   return (

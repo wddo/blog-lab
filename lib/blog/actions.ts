@@ -17,8 +17,6 @@ export async function getCachedTime(): Promise<string> {
 export async function getPosts(): Promise<IBlogPostItem[]> {
   "use cache";
 
-  cacheTag("posts");
-
   const supabase = createClientSupabase();
   const { data, error } = await supabase.from("posts").select("*");
 
@@ -34,8 +32,6 @@ export async function getPosts(): Promise<IBlogPostItem[]> {
 export async function getComments(postId: string): Promise<IComment[]> {
   "use cache";
 
-  cacheTag(`comments-${postId}`);
-
   const supabase = createClientSupabase();
   const { data, error } = await supabase
     .from("comments")
@@ -48,6 +44,34 @@ export async function getComments(postId: string): Promise<IComment[]> {
   }
 
   return data || [];
+}
+
+export async function updateComment(
+  postId: string,
+  commentId: string,
+  formData: FormData,
+) {
+  const content = formData.get("comment-area") as string;
+
+  console.log("🔥", postId, commentId, content);
+
+  if (!content?.trim()) {
+    throw new Error("Content is required");
+  }
+
+  const supabase = await createServerSupabase();
+  const { error } = await supabase
+    .from("comments")
+    .update({ content })
+    .eq("id", commentId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/blog");
+
+  return { success: true };
 }
 
 export async function insertComment(postId: string, formData: FormData) {

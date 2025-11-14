@@ -1,8 +1,11 @@
 "use client";
 
+import CommentTextArea from "@/components/blog/_internal/CommentTextArea";
+import Button from "@/components/ui/button";
 import DialogModal from "@/components/ui/dialog-modal";
 import Icon from "@/components/ui/Icon";
-import { deleteComment } from "@/lib/blog/actions";
+import { useUser } from "@/hooks/useUser";
+import { deleteComment, updateComment } from "@/lib/blog/actions";
 import type { IComment } from "@/types/blog";
 import { useState } from "react";
 
@@ -13,9 +16,20 @@ interface ICommentItemProps {
 function CommentItem({ comment }: ICommentItemProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+
+  const { author } = useUser();
 
   const handleDeleteClick = () => {
     setShowConfirm(true);
+  };
+
+  const handleEditClick = () => {
+    setShowEdit(true);
+  };
+
+  const handleCancelEdit = () => {
+    setShowEdit(false);
   };
 
   const handleConfirm = async () => {
@@ -24,8 +38,7 @@ function CommentItem({ comment }: ICommentItemProps) {
 
     try {
       await deleteComment(comment.id);
-    } catch (error) {
-      console.error("삭제 실패:", error);
+    } catch {
       setIsDeleted(false);
       alert("삭제에 실패했습니다.");
     }
@@ -33,6 +46,15 @@ function CommentItem({ comment }: ICommentItemProps) {
 
   const handleCancel = () => {
     setShowConfirm(false);
+  };
+
+  const handleEdit = async (formData: FormData) => {
+    try {
+      await updateComment(comment.post_id, comment.id, formData);
+      setShowEdit(false);
+    } catch {
+      alert("수정에 실패했습니다.");
+    }
   };
 
   if (isDeleted) return null;
@@ -48,9 +70,39 @@ function CommentItem({ comment }: ICommentItemProps) {
         <div className="flex-1">
           <div className="mb-1 text-xs text-neutral-500">{comment.author}</div>
           <div className="text-sm leading-relaxed whitespace-pre-wrap">
-            {comment.content}
+            {showEdit ? (
+              <form>
+                <div className="relative">
+                  <CommentTextArea defaultValue={comment.content} />
+                  <div className="flex justify-end gap-2">
+                    <Button type="submit" formAction={handleEdit}>
+                      수정
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCancelEdit}
+                    >
+                      취소
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            ) : (
+              comment.content
+            )}
           </div>
         </div>
+        {author === comment.author && !showEdit ? (
+          <button
+            type="button"
+            onClick={handleEditClick}
+            className="flex items-center justify-center rounded-md p-2 text-xs text-neutral-500 hover:bg-neutral-200"
+          >
+            <Icon name="pencil" size={16} title="수정" />
+          </button>
+        ) : null}
+
         <button
           type="button"
           onClick={handleDeleteClick}

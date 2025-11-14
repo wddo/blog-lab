@@ -2,11 +2,16 @@
 
 import { useFormStatus } from "react-dom";
 
-function CommentTextArea() {
+interface ICommentTextAreaProps {
+  defaultValue?: string;
+}
+
+function CommentTextArea({ defaultValue }: ICommentTextAreaProps) {
   const { pending } = useFormStatus();
   return (
     <textarea
       name="comment-area"
+      defaultValue={defaultValue}
       required
       disabled={pending}
       className="w-full resize-none rounded-md border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-blue-400 disabled:opacity-50"

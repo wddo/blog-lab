@@ -1,7 +1,7 @@
 "use server";
 
-import { IUser } from "@/types/user";
 import { createServerSupabase } from "@/utils/supabase/server";
+import type { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 
 // 회원가입
@@ -61,5 +61,5 @@ export const getUser = async () => {
     return null;
   }
 
-  return data.user as IUser;
+  return data.user as User;
 };

@@ -1,11 +1,11 @@
 import Button from "@/components/ui/button";
 import { signOut } from "@/lib/auth/actions";
 import { getCachedTime } from "@/lib/blog/actions";
-import { IUser } from "@/types/user";
+import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 
 interface IHeaderProps {
-  user: IUser | null;
+  user: User | null;
 }
 
 async function Header({ user }: IHeaderProps) {
