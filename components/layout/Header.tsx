@@ -28,9 +28,14 @@ async function Header({ user }: IHeaderProps) {
               <Button type="submit">Logout</Button>
             </form>
           ) : (
-            <Button variant="outline">
-              <Link href="/login">Login</Link>
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline">
+                <Link href="/signup">Sign up</Link>
+              </Button>
+              <Button variant="primary">
+                <Link href="/login">Login</Link>
+              </Button>
+            </div>
           )}
         </div>
       </div>

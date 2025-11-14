@@ -1,19 +1,13 @@
 "use client";
 
 import Button from "@/components/ui/button";
-import { useEffect } from "react";
 
-function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
+interface IErrorProps {
+  error: Error;
   reset: () => void;
-}) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
+}
 
+function Error({ error, reset }: IErrorProps) {
   return (
     <div className="flex h-screen flex-col items-center justify-center space-y-4">
       <h1 className="text-2xl font-bold">Something went wrong!</h1>
