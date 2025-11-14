@@ -1,18 +1,24 @@
 "use server";
 
 import { IBlogPostItem, IComment } from "@/types/blog";
-import {
-  createPrivateClient,
-  createPublicClient,
-} from "@/utils/supabase/server";
+import { createClientSupabase } from "@/utils/supabase/client";
+import { createServerSupabase } from "@/utils/supabase/server";
 import { cacheTag, revalidatePath } from "next/cache";
+
+export async function getCachedTime(): Promise<string> {
+  "use cache";
+
+  cacheTag("posts");
+
+  return new Date().toLocaleString();
+}
 
 export async function getPosts(): Promise<IBlogPostItem[]> {
   "use cache";
 
   cacheTag("posts");
 
-  const supabase = createPublicClient();
+  const supabase = createClientSupabase();
   const { data, error } = await supabase.from("posts").select("*");
 
   console.log("🔥 getPosts() 갱신됨!", new Date().toLocaleString());
@@ -29,7 +35,7 @@ export async function getComments(postId: string): Promise<IComment[]> {
 
   cacheTag(`comments-${postId}`);
 
-  const supabase = createPublicClient();
+  const supabase = createClientSupabase();
   const { data, error } = await supabase
     .from("comments")
     .select("*")
@@ -54,7 +60,7 @@ export async function insertComment(postId: string, formData: FormData) {
     throw new Error("Post ID is required");
   }
 
-  const supabase = await createPrivateClient();
+  const supabase = await createServerSupabase();
   const { error } = await supabase.from("comments").insert({
     post_id: postId,
     author: "tester",
@@ -69,7 +75,7 @@ export async function insertComment(postId: string, formData: FormData) {
 }
 
 export async function deleteComment(commentId: string) {
-  const supabase = await createPrivateClient();
+  const supabase = await createServerSupabase();
   const { error } = await supabase
     .from("comments")
     .delete()
