@@ -7,12 +7,7 @@ function LoginPage() {
       <form className="space-y-4" action={signInWithEmail}>
         <div className="flex gap-2">
           <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            defaultValue="tester@labs.com"
-          />
+          <input type="email" name="email" placeholder="Email" />
         </div>
         <div className="flex gap-2">
           <label htmlFor="password">Password</label>
