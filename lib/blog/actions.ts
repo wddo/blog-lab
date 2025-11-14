@@ -53,8 +53,6 @@ export async function updateComment(
 ) {
   const content = formData.get("comment-area") as string;
 
-  console.log("🔥", postId, commentId, content);
-
   if (!content?.trim()) {
     throw new Error("Content is required");
   }
