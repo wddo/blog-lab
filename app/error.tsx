@@ -2,12 +2,12 @@
 
 import Button from "@/components/ui/button";
 
-interface IErrorProps {
+type ErrorProps = {
   error: Error;
   reset: () => void;
-}
+};
 
-function Error({ error, reset }: IErrorProps) {
+function Error({ error, reset }: ErrorProps) {
   return (
     <div className="flex h-screen flex-col items-center justify-center space-y-4">
       <h1 className="text-2xl font-bold">Something went wrong!</h1>

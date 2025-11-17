@@ -4,21 +4,21 @@ import { createClientSupabase } from "@/utils/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 
-interface IUserContext {
+type UserContextType = {
   user: User | null;
   author: string | undefined;
-}
+};
 
-export const UserContext = createContext<IUserContext>({
+export const UserContext = createContext<UserContextType>({
   user: null,
   author: undefined,
 });
 
-interface IUserProviderProps extends PropsWithChildren {
+type UserProviderProps = PropsWithChildren & {
   initialUser?: User | null;
-}
+};
 
-function UserProvider({ children, initialUser }: IUserProviderProps) {
+function UserProvider({ children, initialUser }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(initialUser ?? null);
   const author = user?.email?.split("@")[0];
 

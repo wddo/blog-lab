@@ -4,11 +4,11 @@ import { getCachedTime } from "@/lib/blog/actions";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 
-interface IHeaderProps {
+type HeaderProps = {
   user: User | null;
-}
+};
 
-async function Header({ user }: IHeaderProps) {
+async function Header({ user }: HeaderProps) {
   const isLoggedIn = user ? true : false;
 
   const date = await getCachedTime();

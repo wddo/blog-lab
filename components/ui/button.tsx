@@ -1,10 +1,9 @@
 import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 
-interface IButtonProps
-  extends PropsWithChildren,
-    ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "none";
-}
+type ButtonProps = PropsWithChildren &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    variant?: "primary" | "secondary" | "outline" | "none";
+  };
 
 const variantStyles = {
   primary: "bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50",
@@ -15,7 +14,7 @@ const variantStyles = {
   none: "bg-transparent text-neutral-900 hover:bg-neutral-100 disabled:opacity-50",
 };
 
-function Button(props: IButtonProps) {
+function Button(props: ButtonProps) {
   const {
     children,
     type = "button",

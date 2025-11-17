@@ -3,12 +3,12 @@ import CommentBox from "@/components/blog/commnet/CommentBox";
 import CommentList from "@/components/blog/commnet/CommentList";
 import CommentListSkeleton from "@/components/blog/commnet/skeleton/CommentListSkeleton";
 import ImageList from "@/components/blog/image/ImageList";
-import { IBlogPostItem } from "@/types/blog";
+import { BlogPostItem } from "@/types/blog";
 import { Suspense } from "react";
 
-export interface BlogItemProps {
-  item: IBlogPostItem;
-}
+export type BlogItemProps = {
+  item: BlogPostItem;
+};
 
 function BlogItem({ item }: BlogItemProps) {
   const { id, title, imageUrl, content } = item;

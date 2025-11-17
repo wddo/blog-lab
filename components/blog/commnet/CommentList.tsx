@@ -1,11 +1,11 @@
 import { getComments } from "@/lib/blog/actions";
 import CommentItem from "./CommentItem";
 
-interface ICommnetProps {
+type CommentListProps = {
   postId: string;
-}
+};
 
-async function CommentList({ postId }: ICommnetProps) {
+async function CommentList({ postId }: CommentListProps) {
   const comments = await getComments(postId);
 
   if (!comments || comments.length === 0) {

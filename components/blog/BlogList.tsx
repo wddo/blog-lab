@@ -1,10 +1,10 @@
-import { IBlogPostItem } from "@/types/blog";
+import { BlogPostItem } from "@/types/blog";
 import { Suspense } from "react";
 import BlogItem from "./BlogItem";
 
-export interface BlogListProps {
-  items: IBlogPostItem[];
-}
+export type BlogListProps = {
+  items: BlogPostItem[];
+};
 
 export default function BlogList({ items }: BlogListProps) {
   return (

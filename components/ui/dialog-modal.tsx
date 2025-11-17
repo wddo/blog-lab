@@ -5,14 +5,14 @@ import Icon from "@/components/ui/Icon";
 import { FormEvent, PropsWithChildren, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-interface IAlertProps extends PropsWithChildren {
+type DialogModalProps = PropsWithChildren & {
   title?: string;
   isOpen: boolean;
   onClose: () => void;
   onConfirm?: () => void;
   confirmText?: string;
   cancelText?: string;
-}
+};
 
 function DialogModal({
   title = "Confirm",
@@ -22,7 +22,7 @@ function DialogModal({
   onConfirm,
   confirmText = "확인",
   cancelText = "취소",
-}: IAlertProps) {
+}: DialogModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {

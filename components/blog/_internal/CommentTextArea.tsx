@@ -3,12 +3,11 @@
 import { TextareaHTMLAttributes } from "react";
 import { useFormStatus } from "react-dom";
 
-interface ICommentTextAreaProps
-  extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+type CommentTextAreaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   defaultValue?: string;
-}
+};
 
-function CommentTextArea({ defaultValue, ...props }: ICommentTextAreaProps) {
+function CommentTextArea({ defaultValue, ...props }: CommentTextAreaProps) {
   const { pending } = useFormStatus();
   return (
     <textarea

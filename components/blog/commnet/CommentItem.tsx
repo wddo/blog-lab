@@ -6,14 +6,14 @@ import DialogModal from "@/components/ui/dialog-modal";
 import Icon from "@/components/ui/Icon";
 import { useUser } from "@/hooks/useUser";
 import { deleteComment, updateComment } from "@/lib/blog/actions";
-import type { IComment } from "@/types/blog";
+import type { Comment } from "@/types/blog";
 import { useOptimistic, useState } from "react";
 
-interface ICommentItemProps {
-  comment: IComment;
-}
+type CommentItemProps = {
+  comment: Comment;
+};
 
-function CommentItem({ comment }: ICommentItemProps) {
+function CommentItem({ comment }: CommentItemProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [showEdit, setShowEdit] = useState(false);

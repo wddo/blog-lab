@@ -1,7 +1,7 @@
 "use server";
 
 import { getUser } from "@/lib/auth/actions";
-import { IBlogPostItem, IComment } from "@/types/blog";
+import { BlogPostItem, Comment } from "@/types/blog";
 import { createClientSupabase } from "@/utils/supabase/client";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { cacheTag, revalidatePath } from "next/cache";
@@ -14,7 +14,7 @@ export async function getCachedTime(): Promise<string> {
   return new Date().toLocaleString();
 }
 
-export async function getPosts(): Promise<IBlogPostItem[]> {
+export async function getPosts(): Promise<BlogPostItem[]> {
   "use cache";
 
   const supabase = createClientSupabase();
@@ -29,7 +29,7 @@ export async function getPosts(): Promise<IBlogPostItem[]> {
   return data || [];
 }
 
-export async function getComments(postId: string): Promise<IComment[]> {
+export async function getComments(postId: string): Promise<Comment[]> {
   "use cache";
 
   const supabase = createClientSupabase();

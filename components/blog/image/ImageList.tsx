@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-interface IImagesProps {
+type ImageListProps = {
   images?: string[];
-}
+};
 
-function ImageList({ images }: IImagesProps) {
+function ImageList({ images }: ImageListProps) {
   return (
     <>
       {images ? (
