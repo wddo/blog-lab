@@ -14,7 +14,7 @@ function BlogItem({ item }: BlogItemProps) {
   const { id, title, imageUrl, content } = item;
 
   return (
-    <article className="mx-auto w-full max-w-3xl rounded-lg border border-neutral-200">
+    <article className="border-tertiary mx-auto w-full max-w-3xl rounded-lg border">
       <ImageList images={imageUrl} />
 
       <div className="p-6">

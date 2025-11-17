@@ -78,7 +78,7 @@ function CommentItem({ comment }: CommentItemProps) {
         </div>
         <div className="flex-1">
           <div className="mb-1 text-xs text-neutral-500">{comment.author}</div>
-          <div className="text-sm leading-relaxed whitespace-pre-wrap">
+          <div className="text-primary text-sm leading-relaxed whitespace-pre-wrap">
             {showEdit ? (
               <form>
                 <div className="relative">
@@ -106,7 +106,7 @@ function CommentItem({ comment }: CommentItemProps) {
           <button
             type="button"
             onClick={handleEditClick}
-            className="flex items-center justify-center rounded-md p-2 text-xs text-neutral-500 hover:bg-neutral-200"
+            className="text-secondary hover:bg-secondary-hover flex items-center justify-center rounded-md p-2 text-xs"
           >
             <Icon name="pencil" size={16} title="수정" />
           </button>
@@ -115,7 +115,7 @@ function CommentItem({ comment }: CommentItemProps) {
         <button
           type="button"
           onClick={handleDeleteClick}
-          className="flex items-center justify-center rounded-md p-2 text-xs text-neutral-500 hover:bg-neutral-200"
+          className="text-secondary hover:bg-secondary-hover flex items-center justify-center rounded-md p-2 text-xs"
         >
           <Icon name="trash" size={16} title="삭제" />
         </button>

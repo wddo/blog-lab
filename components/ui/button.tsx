@@ -1,24 +1,41 @@
 import { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import { tv } from "tailwind-variants";
 
 type ButtonProps = PropsWithChildren &
   ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: "primary" | "secondary" | "outline" | "none";
+    size?: "small" | "medium" | "large";
   };
 
-const variantStyles = {
-  primary: "bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50",
-  secondary:
-    "bg-neutral-100 text-neutral-900 hover:bg-neutral-200 disabled:opacity-50",
-  outline:
-    "border border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50 disabled:opacity-50",
-  none: "bg-transparent text-neutral-900 hover:bg-neutral-100 disabled:opacity-50",
-};
+const button = tv({
+  base: `flex items-center justify-center rounded-md p-2`,
+  variants: {
+    variant: {
+      primary:
+        "bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50",
+      secondary:
+        "bg-neutral-100 text-neutral-900 hover:bg-neutral-200 disabled:opacity-50",
+      outline:
+        "border border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50 disabled:opacity-50",
+      none: "bg-transparent text-neutral-900 hover:bg-neutral-100 disabled:opacity-50",
+    },
+    size: {
+      small: "text-sm",
+      medium: "text-md",
+      large: "text-lg",
+    },
+  },
+  defaultVariants: {
+    variant: "primary",
+  },
+});
 
 function Button(props: ButtonProps) {
   const {
     children,
     type = "button",
     variant = "primary",
+    size = "medium",
     className = "",
     onClick,
     disabled = false,
@@ -28,7 +45,7 @@ function Button(props: ButtonProps) {
   return (
     <button
       type={type}
-      className={`flex items-center justify-center rounded-md p-2 ${variantStyles[variant]} ${className}`}
+      className={button({ variant, size, className })}
       onClick={onClick}
       disabled={disabled}
       {...rest}

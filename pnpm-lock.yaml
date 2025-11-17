@@ -23,6 +23,12 @@ dependencies:
   react-dom:
     specifier: 19.2.0
     version: 19.2.0(react@19.2.0)
+  tailwind-merge:
+    specifier: ^3.4.0
+    version: 3.4.0
+  tailwind-variants:
+    specifier: ^3.1.1
+    version: 3.1.1(tailwind-merge@3.4.0)(tailwindcss@4.1.16)
 
 devDependencies:
   '@tailwindcss/postcss':
@@ -3514,9 +3520,26 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
+  /tailwind-merge@3.4.0:
+    resolution: {integrity: sha512-uSaO4gnW+b3Y2aWoWfFpX62vn2sR3skfhbjsEnaBI81WD1wBLlHZe5sWf0AqjksNdYTbGBEd0UasQMT3SNV15g==}
+    dev: false
+
+  /tailwind-variants@3.1.1(tailwind-merge@3.4.0)(tailwindcss@4.1.16):
+    resolution: {integrity: sha512-ftLXe3krnqkMHsuBTEmaVUXYovXtPyTK7ckEfDRXS8PBZx0bAUas+A0jYxuKA5b8qg++wvQ3d2MQ7l/xeZxbZQ==}
+    engines: {node: '>=16.x', pnpm: '>=7.x'}
+    peerDependencies:
+      tailwind-merge: '>=3.0.0'
+      tailwindcss: '*'
+    peerDependenciesMeta:
+      tailwind-merge:
+        optional: true
+    dependencies:
+      tailwind-merge: 3.4.0
+      tailwindcss: 4.1.16
+    dev: false
+
   /tailwindcss@4.1.16:
     resolution: {integrity: sha512-pONL5awpaQX4LN5eiv7moSiSPd/DLDzKVRJz8Q9PgzmAdd1R4307GQS2ZpfiN7ZmekdQrfhZZiSE5jkLR4WNaA==}
-    dev: true
 
   /tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}

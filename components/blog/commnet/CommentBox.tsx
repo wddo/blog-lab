@@ -16,20 +16,22 @@ function CommentBox({ postId }: CommentBoxProps) {
 
   return (
     <form
-      className="mb-6 rounded-lg border border-neutral-200 p-4"
+      className="border-tertiary mb-6 rounded-lg border p-4"
       action={insertComment.bind(null, postId)}
       key={postId}
     >
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-200">
-          <span className="text-xs text-neutral-600">{avatar}</span>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="bg-tertiary flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+            <span className="text-secondary text-xs">{avatar}</span>
+          </div>
+          <div className="text-secondary mb-1 text-xs">{author}</div>
         </div>
-        <div className="flex-1">
-          <div className="mb-1 text-xs text-neutral-500">{author}</div>
+        <div>
           <div className="flex-1">
             <CommentTextArea />
             <div className="mt-3 flex justify-end">
-              <SubmitButton />
+              <SubmitButton text="댓글 등록" />
             </div>
           </div>
         </div>
