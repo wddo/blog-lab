@@ -7,7 +7,7 @@ import Icon from "@/components/ui/Icon";
 import { useUser } from "@/hooks/useUser";
 import { deleteComment, updateComment } from "@/lib/blog/actions";
 import type { IComment } from "@/types/blog";
-import { useState } from "react";
+import { useOptimistic, useState } from "react";
 
 interface ICommentItemProps {
   comment: IComment;
@@ -49,6 +49,8 @@ function CommentItem({ comment }: ICommentItemProps) {
   };
 
   const handleEdit = async (formData: FormData) => {
+    const textareaValue = formData.get("comment-area") as string;
+    updateOptimisticCommentValue(textareaValue);
     try {
       await updateComment(comment.post_id, comment.id, formData);
       setShowEdit(false);
@@ -56,6 +58,13 @@ function CommentItem({ comment }: ICommentItemProps) {
       alert("수정에 실패했습니다.");
     }
   };
+
+  const [optimisticCommentValue, updateOptimisticCommentValue] = useOptimistic<
+    string,
+    string
+  >(comment.content, (_, optimistic) => {
+    return optimistic;
+  });
 
   if (isDeleted) return null;
 
@@ -89,7 +98,7 @@ function CommentItem({ comment }: ICommentItemProps) {
                 </div>
               </form>
             ) : (
-              comment.content
+              optimisticCommentValue
             )}
           </div>
         </div>
