@@ -52,7 +52,7 @@ function CommentItem({ comment }: CommentItemProps) {
     const textareaValue = formData.get("comment-area") as string;
     updateOptimisticCommentValue(textareaValue);
     try {
-      await updateComment(comment.post_id, comment.id, formData);
+      await updateComment(comment.id, formData);
       setShowEdit(false);
     } catch {
       alert("수정에 실패했습니다.");
@@ -78,7 +78,7 @@ function CommentItem({ comment }: CommentItemProps) {
         </div>
         <div className="flex-1">
           <div className="mb-1 text-xs text-neutral-500">{comment.author}</div>
-          <div className="text-primary text-sm leading-relaxed whitespace-pre-wrap">
+          <div className="text-sm leading-relaxed whitespace-pre-wrap">
             {showEdit ? (
               <form>
                 <div className="relative">

@@ -37,7 +37,6 @@ function Button(props: ButtonProps) {
     variant = "primary",
     size = "medium",
     className = "",
-    onClick,
     disabled = false,
     ...rest
   } = props;
@@ -46,7 +45,6 @@ function Button(props: ButtonProps) {
     <button
       type={type}
       className={button({ variant, size, className })}
-      onClick={onClick}
       disabled={disabled}
       {...rest}
     >

@@ -11,11 +11,11 @@ export type BlogItemProps = {
 };
 
 function BlogItem({ item }: BlogItemProps) {
-  const { id, title, imageUrl, content } = item;
+  const { id, title, post_images, content } = item;
 
   return (
     <article className="border-tertiary mx-auto w-full max-w-3xl rounded-lg border">
-      <ImageList images={imageUrl} />
+      <ImageList images={post_images} />
 
       <div className="p-6">
         <h2 className="mb-3 text-2xl font-bold tracking-tight">{title}</h2>

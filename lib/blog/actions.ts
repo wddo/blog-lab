@@ -18,9 +18,9 @@ export async function getPosts(): Promise<BlogPostItem[]> {
   "use cache";
 
   const supabase = createClientSupabase();
-  const { data, error } = await supabase.from("posts").select("*");
-
-  console.log("🔥 getPosts() 갱신됨!", new Date().toLocaleString());
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*, post_images(*)");
 
   if (error) {
     throw new Error(error.message);
@@ -46,11 +46,7 @@ export async function getComments(postId: string): Promise<Comment[]> {
   return data || [];
 }
 
-export async function updateComment(
-  postId: string,
-  commentId: string,
-  formData: FormData,
-) {
+export async function updateComment(commentId: string, formData: FormData) {
   const content = formData.get("comment-area") as string;
 
   if (!content?.trim()) {
@@ -68,8 +64,6 @@ export async function updateComment(
   }
 
   revalidatePath("/blog");
-
-  return { success: true };
 }
 
 export async function insertComment(postId: string, formData: FormData) {

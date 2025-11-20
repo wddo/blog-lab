@@ -9,6 +9,12 @@ export type Comment = {
 export type BlogPostItem = {
   id: string;
   title: string;
-  imageUrl?: string[];
+  post_images: PostImage[];
   content: string;
+};
+
+export type PostImage = {
+  post_id: string;
+  image_url: string;
+  sort_order: number;
 };
