@@ -1,9 +1,19 @@
 "use client";
 import ImageInput from "@/components/blog/_internal/ImageInput";
-import { useState } from "react";
+import { RefObject, useImperativeHandle, useState } from "react";
 
-function ImageUploadFrom() {
+export type ImageUploadFormHandle = {
+  reset: () => void;
+};
+
+type ImageUploadFromProps = {
+  disabled: boolean;
+  ref: RefObject<ImageUploadFormHandle | null>;
+};
+
+function ImageUploadForm({ disabled, ref }: ImageUploadFromProps) {
   const [count, setCount] = useState(1);
+  const [resetKey, setResetKey] = useState(0);
   const maxImages = 4;
 
   const handleFileSelected = () => {
@@ -11,6 +21,14 @@ function ImageUploadFrom() {
       setCount((prev) => prev + 1);
     }
   };
+
+  // 부모 컴포넌트에서 호출할 수 있는 reset 함수
+  useImperativeHandle(ref, () => ({
+    reset: () => {
+      setCount(1);
+      setResetKey((prev) => prev + 1); // key 변경으로 완전 리마운트
+    },
+  }));
 
   return (
     <>
@@ -22,9 +40,10 @@ function ImageUploadFrom() {
       <div className="flex gap-2">
         {Array.from({ length: count }).map((_, index) => (
           <ImageInput
-            key={index}
+            key={`${resetKey}-${index}`}
+            disabled={disabled}
             onFileSelected={
-              index === count - 1 ? handleFileSelected : undefined // 마지막 이미지일 때 추가 영역 노출
+              index === count - 1 ? handleFileSelected : undefined
             }
           />
         ))}
@@ -33,4 +52,4 @@ function ImageUploadFrom() {
   );
 }
 
-export default ImageUploadFrom;
+export default ImageUploadForm;

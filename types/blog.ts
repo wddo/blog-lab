@@ -11,10 +11,11 @@ export type BlogPostItem = {
   title: string;
   post_images: PostImage[];
   content: string;
+  user_id: string;
 };
 
 export type PostImage = {
   post_id: string;
-  image_url: string;
+  image_name: string;
   sort_order: number;
 };

@@ -1,8 +1,11 @@
 import InteractionButtons from "@/components/blog/_internal/InteractionButtons";
+import TrashButton from "@/components/blog/_internal/trashButton";
 import CommentBox from "@/components/blog/commnet/CommentBox";
 import CommentList from "@/components/blog/commnet/CommentList";
 import CommentListSkeleton from "@/components/blog/commnet/skeleton/CommentListSkeleton";
 import ImageList from "@/components/blog/image/ImageList";
+import { getUser } from "@/lib/auth/actions";
+import { deletePost } from "@/lib/blog/actions";
 import { BlogPostItem } from "@/types/blog";
 import { Suspense } from "react";
 
@@ -10,11 +13,35 @@ export type BlogItemProps = {
   item: BlogPostItem;
 };
 
-function BlogItem({ item }: BlogItemProps) {
-  const { id, title, post_images, content } = item;
+async function BlogItem({ item }: BlogItemProps) {
+  const { id, user_id, title, post_images, content } = item;
+
+  const checkUser = async () => {
+    const user = await getUser();
+
+    return user?.id === user_id;
+  };
+
+  const handleDelete = async () => {
+    "use server";
+
+    await deletePost(
+      id,
+      post_images.map((data) => data.image_name),
+    );
+  };
+
+  const isUser = await checkUser();
 
   return (
-    <article className="border-tertiary mx-auto w-full max-w-3xl rounded-lg border">
+    <article className="border-tertiary relative mx-auto w-full max-w-3xl rounded-lg border">
+      {isUser ? (
+        <TrashButton
+          onDelete={handleDelete}
+          className="absolute top-2 right-2 z-1"
+        ></TrashButton>
+      ) : null}
+
       <ImageList images={post_images} />
 
       <div className="p-6">

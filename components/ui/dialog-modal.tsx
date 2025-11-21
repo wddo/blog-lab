@@ -12,11 +12,13 @@ type DialogModalProps = PropsWithChildren & {
   onConfirm?: () => void;
   confirmText?: string;
   cancelText?: string;
+  disabled?: boolean;
 };
 
 function DialogModal({
   title = "Confirm",
   children,
+  disabled,
   isOpen,
   onClose,
   onConfirm,
@@ -58,16 +60,22 @@ function DialogModal({
             className="ml-auto flex h-8 w-8 items-center justify-center"
             onClick={onClose}
             variant="none"
+            disabled={disabled}
           >
             <Icon name="close" size={20} />
           </Button>
         </div>
         <div className="text-neutral-700">{children}</div>
         <div className="flex justify-center gap-2">
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" disabled={disabled}>
             {confirmText}
           </Button>
-          <Button type="button" onClick={onClose} variant="outline">
+          <Button
+            type="button"
+            onClick={onClose}
+            variant="outline"
+            disabled={disabled}
+          >
             {cancelText}
           </Button>
         </div>

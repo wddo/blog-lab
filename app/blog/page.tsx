@@ -20,14 +20,17 @@ async function BlogPage() {
 
   return (
     <UserProvider initialUser={user}>
-      <main className="p-4">
+      <main className="p-4 has-[#footer-buttons]:pb-18">
         <div className="flex flex-col space-y-4">
           <h1 className="flex-1 text-3xl font-bold tracking-tight">Blog</h1>
           <Header user={user} />
           <BlogList items={posts} />
         </div>
         <form>
-          <div className="fixed right-4 bottom-4 flex gap-1">
+          <div
+            className="fixed right-4 bottom-4 flex gap-1"
+            id="footer-buttons"
+          >
             <Link
               href="/blog/write"
               className="bg-primary hover:bg-primary-hover flex items-center gap-1 rounded-md p-2 text-white"

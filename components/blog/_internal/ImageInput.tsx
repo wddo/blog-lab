@@ -1,14 +1,16 @@
 import Icon from "@/components/ui/Icon";
 import Image from "next/image";
-import { ChangeEvent, HTMLAttributes, useId, useState } from "react";
+import { ChangeEvent, HTMLAttributes, useEffect, useId, useState } from "react";
 
 type ImageInputProps = {
   onFileSelected?: () => void;
+  disabled: boolean;
 } & HTMLAttributes<HTMLDivElement>;
 
 function ImageInput({
   onFileSelected,
   className = "",
+  disabled,
   ...props
 }: ImageInputProps) {
   const [preview, setPreview] = useState<string | undefined>(undefined);
@@ -22,6 +24,16 @@ function ImageInput({
       onFileSelected?.();
     }
   };
+
+  // preview 메모리 정리
+  useEffect(() => {
+    const currentPreview = preview;
+    return () => {
+      if (currentPreview) {
+        URL.revokeObjectURL(currentPreview);
+      }
+    };
+  }, [preview]);
 
   return (
     <div
@@ -50,6 +62,7 @@ function ImageInput({
         className="hidden"
         accept="image/*"
         onChange={handleChange}
+        disabled={disabled}
       />
     </div>
   );

@@ -1,10 +1,20 @@
 "use client";
 
 import Button from "@/components/ui/button";
+import { useEffect } from "react";
 import { useFormStatus } from "react-dom";
 
-function SubmitButton({ text }: { text: string }) {
+type SubmitButtonProps = {
+  text: string;
+  onPending?: (pending: boolean) => void;
+};
+
+function SubmitButton({ text, onPending }: SubmitButtonProps) {
   const { pending } = useFormStatus();
+
+  useEffect(() => {
+    onPending?.(pending);
+  }, [pending, onPending]);
 
   return (
     <Button type="submit" disabled={pending} size="small">

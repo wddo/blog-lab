@@ -29,6 +29,34 @@ export async function getPosts(): Promise<BlogPostItem[]> {
   return data || [];
 }
 
+export async function deletePost(postId: string, imageNames: string[]) {
+  const supabase = await createServerSupabase();
+
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const { error } = await supabase
+    .from("posts")
+    .delete()
+    .eq("id", postId)
+    .eq("user_id", user.id);
+
+  try {
+    await supabase.storage.from("post-images").remove(imageNames);
+  } catch {
+    throw new Error("Failed to delete images");
+  }
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/blog");
+}
+
 export async function getComments(postId: string): Promise<Comment[]> {
   "use cache";
 

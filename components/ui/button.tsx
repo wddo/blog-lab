@@ -11,13 +11,11 @@ const button = tv({
   base: `flex items-center justify-center rounded-md p-2`,
   variants: {
     variant: {
-      primary:
-        "bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50",
-      secondary:
-        "bg-neutral-100 text-neutral-900 hover:bg-neutral-200 disabled:opacity-50",
+      primary: "bg-neutral-900 text-white hover:bg-neutral-800",
+      secondary: "bg-neutral-100 text-neutral-900 hover:bg-neutral-200",
       outline:
-        "border border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50 disabled:opacity-50",
-      none: "bg-transparent text-neutral-900 hover:bg-neutral-100 disabled:opacity-50",
+        "border border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50",
+      none: "bg-transparent text-neutral-900 hover:bg-neutral-100",
     },
     size: {
       small: "text-sm",
@@ -37,7 +35,6 @@ function Button(props: ButtonProps) {
     variant = "primary",
     size = "medium",
     className = "",
-    disabled = false,
     ...rest
   } = props;
 
@@ -45,7 +42,6 @@ function Button(props: ButtonProps) {
     <button
       type={type}
       className={button({ variant, size, className })}
-      disabled={disabled}
       {...rest}
     >
       {children}

@@ -1,5 +1,6 @@
 "use server";
 
+import { getUser } from "@/lib/auth/actions";
 import { PostImage } from "@/types/blog";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { randomUUID } from "crypto";
@@ -10,6 +11,12 @@ import { redirect } from "next/navigation";
  */
 export async function createPost(formData: FormData): Promise<void> {
   const supabase = await createServerSupabase();
+
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
@@ -22,7 +29,7 @@ export async function createPost(formData: FormData): Promise<void> {
   // 1. posts 테이블에 게시글 저장
   const { data: post, error: postError } = await supabase
     .from("posts")
-    .insert({ title, content })
+    .insert({ title, content, user_id: user.id })
     .select("id")
     .single();
 
@@ -59,27 +66,29 @@ async function createPostImages(
     return [];
   }
 
-  const imageUrls = await Promise.all(
-    validImages.map((image) => uploadImage(image)),
-  );
+  return await Promise.all(
+    validImages.map(async (image, index) => {
+      const { name } = await uploadImage(image);
 
-  return imageUrls.map((imageUrl, index) => ({
-    post_id: postId,
-    image_url: imageUrl,
-    sort_order: index,
-  }));
+      return {
+        post_id: postId,
+        image_name: name,
+        sort_order: index,
+      };
+    }),
+  );
 }
 
 /**
  * 스토리지에 이미지 업로드 및 공개 URL 반환
  */
-async function uploadImage(image: File): Promise<string> {
+async function uploadImage(image: File): Promise<{ name: string }> {
   const supabase = await createServerSupabase();
 
   const fileExt = image.name.split(".").pop() || "jpg";
   const uniqueFileName = `${randomUUID()}.${fileExt}`;
 
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from("post-images")
     .upload(uniqueFileName, image);
 
@@ -87,21 +96,5 @@ async function uploadImage(image: File): Promise<string> {
     throw new Error(`이미지 업로드 실패: ${error.message}`);
   }
 
-  const {
-    data: { publicUrl },
-  } = supabase.storage.from("post-images").getPublicUrl(data.path);
-
-  return publicUrl;
-}
-
-export async function removeImage(image: File) {
-  const supabase = await createServerSupabase();
-
-  const { error } = await supabase.storage
-    .from("post-images")
-    .remove([image.name]);
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  return { name: uniqueFileName };
 }
