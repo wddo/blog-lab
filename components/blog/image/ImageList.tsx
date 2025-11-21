@@ -2,7 +2,9 @@ import { STORAGE_BUCKET_URL } from "@/data/constants";
 import { PostImage } from "@/types/blog";
 import Image from "next/image";
 
-function ImageList({ images }: { images: PostImage[] }) {
+async function ImageList({ images }: { images: PostImage[] }) {
+  "use cache";
+
   return (
     <>
       {images ? (
@@ -19,6 +21,7 @@ function ImageList({ images }: { images: PostImage[] }) {
                   fill
                   className="object-cover"
                   priority
+                  placeholder="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
                 />
               </div>
             </div>

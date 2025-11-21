@@ -4,6 +4,7 @@ import { getUser } from "@/lib/auth/actions";
 import { PostImage } from "@/types/blog";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { randomUUID } from "crypto";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 /**
@@ -50,6 +51,7 @@ export async function createPost(formData: FormData): Promise<void> {
     }
   }
 
+  revalidatePath("/blog");
   redirect("/blog");
 }
 
