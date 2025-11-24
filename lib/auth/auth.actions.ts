@@ -4,7 +4,8 @@ import { createServerSupabase } from "@/utils/supabase/server";
 import type { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 
-// 회원가입
+// ==================== 회원가입 ====================
+
 export const signUpNewUser = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -25,7 +26,8 @@ export const signUpNewUser = async (formData: FormData) => {
   }
 };
 
-// 로그인
+// ==================== 로그인 ====================
+
 export const signInWithEmail = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -43,7 +45,8 @@ export const signInWithEmail = async (formData: FormData) => {
   }
 };
 
-// 로그아웃
+// ==================== 로그아웃 ====================
+
 export const signOut = async () => {
   const supabase = await createServerSupabase();
   const { error } = await supabase.auth.signOut();
@@ -52,6 +55,8 @@ export const signOut = async () => {
     redirect("/blog");
   }
 };
+
+// ==================== 사용자 정보 ====================
 
 export const getUser = async () => {
   const supabase = await createServerSupabase();
@@ -63,3 +68,4 @@ export const getUser = async () => {
 
   return data.user as User;
 };
+

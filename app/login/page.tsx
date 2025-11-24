@@ -1,5 +1,5 @@
 import Button from "@/components/ui/button";
-import { signInWithEmail } from "@/lib/auth/actions";
+import { signInWithEmail } from "@/lib/auth/auth.actions";
 import Link from "next/link";
 
 function LoginPage() {

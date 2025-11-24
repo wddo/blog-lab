@@ -1,5 +1,5 @@
 import Button from "@/components/ui/button";
-import { signUpNewUser } from "@/lib/auth/actions";
+import { signUpNewUser } from "@/lib/auth/auth.actions";
 import Link from "next/link";
 
 function SignupPage() {

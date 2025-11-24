@@ -4,8 +4,8 @@ import CommentBox from "@/components/blog/commnet/CommentBox";
 import CommentList from "@/components/blog/commnet/CommentList";
 import CommentListSkeleton from "@/components/blog/commnet/skeleton/CommentListSkeleton";
 import ImageList from "@/components/blog/image/ImageList";
-import { getUser } from "@/lib/auth/actions";
-import { deletePost } from "@/lib/blog/actions";
+import { getUser } from "@/lib/auth/auth.actions";
+import { deletePost } from "@/lib/blog/post.actions";
 import { BlogPostItem } from "@/types/blog";
 import { Suspense } from "react";
 

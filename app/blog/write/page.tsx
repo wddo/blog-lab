@@ -6,7 +6,7 @@ import ImageUploadFrom, {
   ImageUploadFormHandle,
 } from "@/components/blog/image/ImageUploadForm";
 import Icon from "@/components/ui/Icon";
-import { createPost } from "@/lib/blog/write/actions";
+import { createPost } from "@/lib/blog/post.actions";
 import { useEffect, useRef, useState } from "react";
 
 function WritePage() {

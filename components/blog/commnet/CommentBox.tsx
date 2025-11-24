@@ -3,7 +3,7 @@
 import CommentTextArea from "@/components/blog/_internal/CommentTextArea";
 import SubmitButton from "@/components/blog/_internal/SubmitButton";
 import { useUser } from "@/hooks/useUser";
-import { insertComment } from "@/lib/blog/actions";
+import { insertComment } from "@/lib/blog/comment.actions";
 
 interface CommentBoxProps {
   postId: string;

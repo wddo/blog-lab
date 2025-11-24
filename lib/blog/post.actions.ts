@@ -1,18 +1,34 @@
 "use server";
 
-import { getUser } from "@/lib/auth/actions";
-import { PostImage } from "@/types/blog";
+import { getUser } from "@/lib/auth/auth.actions";
+import { BlogPostItem, PostImage } from "@/types/blog";
+import { createClientSupabase } from "@/utils/supabase/client";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-/**
- * 게시글 작성 (이미지 포함)
- */
+// ==================== 조회 ====================
+
+export async function getPosts(): Promise<BlogPostItem[]> {
+  "use cache";
+
+  const supabase = createClientSupabase();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*, post_images(*)");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data || [];
+}
+
+// ==================== 작성 ====================
+
 export async function createPost(formData: FormData): Promise<void> {
   const supabase = await createServerSupabase();
-
   const user = await getUser();
 
   if (!user) {
@@ -55,6 +71,41 @@ export async function createPost(formData: FormData): Promise<void> {
   redirect("/blog");
 }
 
+// ==================== 삭제 ====================
+
+export async function deletePost(postId: string, imageNames: string[]) {
+  const supabase = await createServerSupabase();
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const { error } = await supabase
+    .from("posts")
+    .delete()
+    .eq("id", postId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // Storage에서 이미지 삭제
+  if (imageNames.length > 0) {
+    try {
+      await supabase.storage.from("post-images").remove(imageNames);
+    } catch (error) {
+      console.error("이미지 삭제 실패:", error);
+      // 게시글은 이미 삭제됨, 이미지 삭제 실패는 무시
+    }
+  }
+
+  revalidatePath("/blog");
+}
+
+// ==================== 내부 헬퍼 함수 ====================
+
 /**
  * 이미지 업로드 및 post_images 배열 생성
  */
@@ -82,7 +133,7 @@ async function createPostImages(
 }
 
 /**
- * 스토리지에 이미지 업로드 및 공개 URL 반환
+ * 스토리지에 이미지 업로드
  */
 async function uploadImage(image: File): Promise<{ name: string }> {
   const supabase = await createServerSupabase();

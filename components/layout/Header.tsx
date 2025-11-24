@@ -1,12 +1,20 @@
 import Button from "@/components/ui/button";
-import { signOut } from "@/lib/auth/actions";
-import { getCachedTime } from "@/lib/blog/actions";
+import { signOut } from "@/lib/auth/auth.actions";
 import type { User } from "@supabase/supabase-js";
+import { cacheTag } from "next/cache";
 import Link from "next/link";
 
 type HeaderProps = {
   user: User | null;
 };
+
+async function getCachedTime() {
+  "use cache";
+
+  cacheTag("timestamp");
+
+  return new Date().toLocaleString();
+}
 
 async function Header({ user }: HeaderProps) {
   const isLoggedIn = user ? true : false;

@@ -1,4 +1,4 @@
-import { getComments } from "@/lib/blog/actions";
+import { getComments } from "@/lib/blog/comment.actions";
 import CommentItem from "./CommentItem";
 
 type CommentListProps = {

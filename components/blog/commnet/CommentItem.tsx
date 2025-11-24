@@ -5,7 +5,7 @@ import Button from "@/components/ui/button";
 import DialogModal from "@/components/ui/dialog-modal";
 import Icon from "@/components/ui/Icon";
 import { useUser } from "@/hooks/useUser";
-import { deleteComment, updateComment } from "@/lib/blog/actions";
+import { deleteComment, updateComment } from "@/lib/blog/comment.actions";
 import type { Comment } from "@/types/blog";
 import { useOptimistic, useState } from "react";
 
