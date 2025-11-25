@@ -8,6 +8,13 @@ import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+// ==================== 내부 타입 ====================
+
+/**
+ * DB 조회 시 사용하는 post_images 테이블 타입 (id 포함)
+ */
+type PostImageRow = PostImage & { id: string };
+
 // ==================== 조회 ====================
 
 export async function getPosts(): Promise<BlogPostItem[]> {
@@ -16,13 +23,32 @@ export async function getPosts(): Promise<BlogPostItem[]> {
   const supabase = createClientSupabase();
   const { data, error } = await supabase
     .from("posts")
-    .select("*, post_images(*)");
+    .select("*, post_images(*)")
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(error.message);
   }
 
   return data || [];
+}
+
+// 단일 게시글 조회
+export async function getPost(id: string): Promise<BlogPostItem> {
+  "use cache";
+
+  const supabase = createClientSupabase();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*, post_images(*)")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
 }
 
 // ==================== 작성 ====================
@@ -55,7 +81,7 @@ export async function createPost(formData: FormData): Promise<void> {
   }
 
   // 2. 이미지 처리 및 post_images 테이블 저장
-  const postImages = await createPostImages(post.id, images);
+  const postImages = await createPostImagesData(post.id, images);
 
   if (postImages.length > 0) {
     const { error: imagesError } = await supabase
@@ -71,9 +97,9 @@ export async function createPost(formData: FormData): Promise<void> {
   redirect("/blog");
 }
 
-// ==================== 삭제 ====================
+// ==================== 수정 ====================
 
-export async function deletePost(postId: string, imageNames: string[]) {
+export async function updatePost(formData: FormData) {
   const supabase = await createServerSupabase();
   const user = await getUser();
 
@@ -81,9 +107,22 @@ export async function deletePost(postId: string, imageNames: string[]) {
     throw new Error("User not found");
   }
 
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const files = formData.getAll("image") as File[];
+  const postId = formData.get("post-id") as string;
+  const previousImageNames = formData.getAll("previous-image") as string[]; // 유지할 기존 이미지
+
+  if (!title || !content) {
+    throw new Error("제목과 내용을 입력해주세요");
+  }
+
   const { error } = await supabase
     .from("posts")
-    .delete()
+    .update({
+      title,
+      content,
+    })
     .eq("id", postId)
     .eq("user_id", user.id);
 
@@ -91,15 +130,80 @@ export async function deletePost(postId: string, imageNames: string[]) {
     throw new Error(error.message);
   }
 
-  // Storage에서 이미지 삭제
-  if (imageNames.length > 0) {
-    try {
-      await supabase.storage.from("post-images").remove(imageNames);
-    } catch (error) {
-      console.error("이미지 삭제 실패:", error);
-      // 게시글은 이미 삭제됨, 이미지 삭제 실패는 무시
+  // post_images 테이블에서 기존 이미지 목록 조회
+  const { data: postImageColumns } = (await supabase
+    .from("post_images")
+    .select("*")
+    .eq("post_id", postId)) as { data: PostImageRow[] | null };
+
+  // 새로 업로드할 파일명 목록
+  const validImages = files.filter((file) => file?.size > 0);
+
+  // 삭제된 이미지
+  const deletedColumn =
+    postImageColumns?.filter(
+      (column) => !previousImageNames.includes(column.image_name),
+    ) ?? [];
+
+  // storage에서 이미지 파일 삭제
+  if (deletedColumn.length > 0) {
+    const deletedImageNames = deletedColumn.map((column) => column.image_name);
+    await deleteStorageImages(deletedImageNames);
+
+    // post_images 테이블에서 레코드 삭제
+    const deletedImageIds = deletedColumn.map((column) => column.id);
+    const { error: deleteError } = await supabase
+      .from("post_images")
+      .delete()
+      .in("id", deletedImageIds);
+
+    if (deleteError) {
+      throw new Error(`이미지 삭제 실패: ${deleteError.message}`);
     }
   }
+
+  // 새 이미지 업로드 및 post_images 테이블 저장
+  if (validImages.length > 0) {
+    const postImages = await createPostImagesData(postId, validImages);
+
+    const { error: imagesError } = await supabase
+      .from("post_images")
+      .insert(postImages);
+
+    if (imagesError) {
+      throw new Error(`이미지 저장 실패: ${imagesError.message}`);
+    }
+  }
+
+  revalidatePath("/blog");
+  redirect("/blog");
+}
+
+// ==================== 삭제 ====================
+
+export async function deletePost(postId: string) {
+  const supabase = await createServerSupabase();
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const { data, error } = await supabase
+    .from("posts")
+    .delete()
+    .eq("id", postId)
+    .eq("user_id", user.id)
+    .select("post_images(*)")
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // Storage에서 이미지 삭제
+  const imageNames = data?.post_images?.map((image) => image.image_name) || [];
+  await deleteStorageImages(imageNames);
 
   revalidatePath("/blog");
 }
@@ -107,9 +211,9 @@ export async function deletePost(postId: string, imageNames: string[]) {
 // ==================== 내부 헬퍼 함수 ====================
 
 /**
- * 이미지 업로드 및 post_images 배열 생성
+ * 이미지 업로드 및 post_images 테이블 데이터 생성
  */
-async function createPostImages(
+async function createPostImagesData(
   postId: string,
   files: File[],
 ): Promise<PostImage[]> {
@@ -121,7 +225,7 @@ async function createPostImages(
 
   return await Promise.all(
     validImages.map(async (image, index) => {
-      const { name } = await uploadImage(image);
+      const { name } = await uploadStrorageImage(image);
 
       return {
         post_id: postId,
@@ -133,9 +237,24 @@ async function createPostImages(
 }
 
 /**
+ * 스토리지에서 이미지 삭제
+ */
+async function deleteStorageImages(imageNames: string[]) {
+  const supabase = await createServerSupabase();
+
+  if (imageNames.length) {
+    try {
+      await supabase.storage.from("post-images").remove(imageNames);
+    } catch (error) {
+      console.error("이미지 삭제 실패:", error);
+    }
+  }
+}
+
+/**
  * 스토리지에 이미지 업로드
  */
-async function uploadImage(image: File): Promise<{ name: string }> {
+async function uploadStrorageImage(image: File): Promise<{ name: string }> {
   const supabase = await createServerSupabase();
 
   const fileExt = image.name.split(".").pop() || "jpg";

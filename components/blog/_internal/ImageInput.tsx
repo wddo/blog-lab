@@ -1,19 +1,25 @@
 import Icon from "@/components/ui/Icon";
+import { STORAGE_BUCKET_URL } from "@/data/constants";
 import Image from "next/image";
 import { ChangeEvent, HTMLAttributes, useEffect, useId, useState } from "react";
 
 type ImageInputProps = {
   onFileSelected?: () => void;
   disabled: boolean;
+  src?: string;
 } & HTMLAttributes<HTMLDivElement>;
 
 function ImageInput({
   onFileSelected,
   className = "",
   disabled,
+  src,
   ...props
 }: ImageInputProps) {
-  const [preview, setPreview] = useState<string | undefined>(undefined);
+  const [previousImage, setPreviousImage] = useState<string | undefined>(src);
+  const [preview, setPreview] = useState<string | undefined>(
+    src ? `${STORAGE_BUCKET_URL}/${src}` : undefined,
+  );
   const id = useId();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,6 +28,7 @@ function ImageInput({
     if (file) {
       setPreview(URL.createObjectURL(file));
       onFileSelected?.();
+      setPreviousImage(undefined); // 기존 이미지 정보 제거
     }
   };
 
@@ -64,6 +71,7 @@ function ImageInput({
         onChange={handleChange}
         disabled={disabled}
       />
+      <input type="hidden" name="previous-image" value={previousImage ?? ""} />
     </div>
   );
 }

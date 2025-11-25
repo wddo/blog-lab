@@ -1,12 +1,14 @@
 import InteractionButtons from "@/components/blog/_internal/InteractionButtons";
-import TrashButton from "@/components/blog/_internal/trashButton";
+import TrashButton from "@/components/blog/_internal/TrashButton";
 import CommentBox from "@/components/blog/commnet/CommentBox";
 import CommentList from "@/components/blog/commnet/CommentList";
 import CommentListSkeleton from "@/components/blog/commnet/skeleton/CommentListSkeleton";
 import ImageList from "@/components/blog/image/ImageList";
+import Icon from "@/components/ui/Icon";
 import { getUser } from "@/lib/auth/auth.actions";
 import { deletePost } from "@/lib/blog/post.actions";
 import { BlogPostItem } from "@/types/blog";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export type BlogItemProps = {
@@ -26,8 +28,7 @@ async function BlogItem({ item }: BlogItemProps) {
     "use server";
 
     await deletePost(
-      id,
-      post_images.map((data) => data.image_name),
+      id
     );
   };
 
@@ -35,13 +36,6 @@ async function BlogItem({ item }: BlogItemProps) {
 
   return (
     <article className="border-tertiary relative mx-auto w-full max-w-3xl rounded-lg border">
-      {isUser ? (
-        <TrashButton
-          onDelete={handleDelete}
-          className="absolute top-2 right-2 z-1"
-        ></TrashButton>
-      ) : null}
-
       <ImageList images={post_images} />
 
       <div className="p-6">
@@ -58,6 +52,18 @@ async function BlogItem({ item }: BlogItemProps) {
           <CommentList postId={id} />
         </Suspense>
       </div>
+
+      {isUser ? (
+        <div className="absolute top-2 right-2 flex justify-end gap-2">
+          <Link
+            href={`/blog/edit/${id}`}
+            className="border-tertiary hover:bg-tertiary-hover flex items-center gap-2 rounded-md border bg-white p-2"
+          >
+            <Icon name="write" />
+          </Link>
+          <TrashButton onDelete={handleDelete}></TrashButton>
+        </div>
+      ) : null}
     </article>
   );
 }
