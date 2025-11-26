@@ -1,10 +1,16 @@
 "use client";
+
 import ImageInput from "@/components/blog/_internal/ImageInput";
 import { PostImage } from "@/types/blog";
-import { RefObject, useImperativeHandle, useState } from "react";
+import { RefObject, useCallback, useImperativeHandle, useState } from "react";
 
 export type ImageUploadFormHandle = {
   reset: () => void;
+};
+
+type Slot = {
+  id: string;
+  name: string | undefined;
 };
 
 type ImageUploadFromProps = {
@@ -15,33 +21,68 @@ type ImageUploadFromProps = {
 
 function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
   const maxImages = 4;
-  const existingCount = images?.length || 0;
+  const length = Math.min((images?.length || 0) + 1, maxImages);
+  const initialSlots = useCallback(
+    () =>
+      Array.from({ length }).map((_, index) => ({
+        id: crypto.randomUUID(),
+        name: images?.[index]?.image_name ?? undefined,
+      })),
+    [images, length],
+  );
 
-  // 고정된 슬롯 배열 사용 (리렌더링 시 컴포넌트 유지)
-  const [slots, setSlots] = useState<(null | File)[]>(() => {
-    // 기존 이미지 + 빈 슬롯 1개
-    return Array(Math.min(existingCount + 1, maxImages)).fill(null);
-  });
-  const [resetKey, setResetKey] = useState(0);
+  // 고정된 슬롯 배열 사용하여 부모 리렌더링에 file 데이터 유지
+  // ( submit → 부모 disabled={pending} → 리렌더링 → 데이터 사라짐 )
+  const [slots, setSlots] = useState<Slot[]>(initialSlots);
 
-  const handleFileSelected = (index: number) => {
-    // 마지막 슬롯에 파일 선택 시 새 슬롯 추가
-    if (index === slots.length - 1 && slots.length < maxImages) {
-      setSlots((prev) => [...prev, null]);
+  // 슬롯 증가
+  const incrementSlot = () => {
+    if (slots.length < maxImages) {
+      setSlots((prev) => [
+        ...prev,
+        {
+          // 마지막 슬롯 "이미지 업로드" 슬롯 추가
+          id: crypto.randomUUID(),
+          name: undefined,
+        },
+      ]);
     }
   };
 
+  // 슬롯 감소
+  const decrementSlot = (index: number) => {
+    setSlots((prev) => {
+      const newSlots = [...prev];
+      newSlots.splice(index, 1);
+
+      // 마지막 슬롯 제거 시 "이미지 업로드" 슬롯 추가
+      if (newSlots.length - 1 === maxImages) {
+        newSlots.push({
+          id: crypto.randomUUID(),
+          name: undefined,
+        });
+      }
+
+      return newSlots;
+    });
+  };
+
+  const handleFileSelected = (index: number) => {
+    if (index === slots.length - 1) {
+      incrementSlot();
+    }
+  };
+
+  const handleDelete = (index: number) => {
+    decrementSlot(index);
+  };
+
   // 부모 컴포넌트에서 호출할 수 있는 reset 함수
-  useImperativeHandle(
-    ref,
-    () => ({
-      reset: () => {
-        setSlots(Array(Math.min(existingCount + 1, maxImages)).fill(null));
-        setResetKey((prev) => prev + 1); // key 변경으로 완전 리마운트
-      },
-    }),
-    [existingCount],
-  );
+  useImperativeHandle(ref, () => ({
+    reset: () => {
+      setSlots(initialSlots());
+    },
+  }));
 
   return (
     <>
@@ -52,16 +93,13 @@ function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
       </p>
 
       <div className="flex gap-2">
-        {slots.map((_, index) => (
+        {slots.map((slot, index) => (
           <ImageInput
-            key={`${resetKey}-${index}`}
+            key={slot.id} // ui 에서 이미지 삭제하고 추가하는 과정에서 충돌을 방지하기 위해 항상 고유 ID 사용
             disabled={disabled}
-            src={images?.[index]?.image_name}
-            onFileSelected={
-              index === slots.length - 1
-                ? () => handleFileSelected(index)
-                : undefined
-            }
+            src={slot.name}
+            onFileSelected={() => handleFileSelected(index)}
+            onDelete={() => handleDelete(index)}
           />
         ))}
       </div>

@@ -1,13 +1,14 @@
 type IconName = keyof typeof icons;
 
-export interface IconProps {
+type IconProps = {
   name: IconName;
   size?: number;
   className?: string;
   solid?: boolean;
+  square?: boolean; // width와 height를 동일하게 맞추는 prop
   title?: string; // aria-hidden 속성 값을 결정하는 데 사용
   ariaHidden?: boolean;
-}
+};
 
 const icons = {
   heart: ({ solid }: { solid?: boolean }) => (
@@ -54,7 +55,6 @@ const icons = {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
     >
       <path
         strokeLinecap="round"
@@ -70,7 +70,6 @@ const icons = {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
     >
       <path
         strokeLinecap="round"
@@ -99,7 +98,6 @@ const icons = {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
     >
       <path
         strokeLinecap="round"
@@ -115,7 +113,6 @@ const icons = {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
     >
       <path
         strokeLinecap="round"
@@ -131,7 +128,6 @@ const icons = {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
     >
       <path
         strokeLinecap="round"
@@ -147,7 +143,6 @@ const icons = {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
     >
       <path
         strokeLinecap="round"
@@ -163,7 +158,6 @@ const icons = {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
     >
       <path
         strokeLinecap="round"
@@ -180,6 +174,7 @@ export default function Icon({
   className,
   solid,
   title,
+  square,
   ariaHidden = !title,
 }: IconProps) {
   const Svg = icons[name];
@@ -188,7 +183,11 @@ export default function Icon({
       role={title ? "img" : undefined}
       aria-hidden={ariaHidden}
       title={title}
-      style={{ width: size, display: "inline-flex" }}
+      style={{
+        width: size,
+        ...(square ? { height: size } : {}),
+        display: "inline-flex",
+      }}
       className={className}
     >
       <Svg solid={solid} />
