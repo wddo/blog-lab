@@ -5,16 +5,15 @@ import SubmitButton from "@/components/blog/_internal/SubmitButton";
 import ImageUploadFrom, {
   ImageUploadFormHandle,
 } from "@/components/blog/image/ImageUploadForm";
-import { updatePost } from "@/lib/blog/post.actions";
 import { BlogPostItem } from "@/types/blog";
-import { useEffect, useRef, useState } from "react";
+import { FormHTMLAttributes, useEffect, useRef, useState } from "react";
 
 type EditFormProps = {
-  data: BlogPostItem;
-};
+  data?: Partial<BlogPostItem>;
+} & FormHTMLAttributes<HTMLFormElement>;
 
-function EditForm({ data }: EditFormProps) {
-  const { id, title, content, post_images } = data;
+function EditForm({ data, ...rest }: EditFormProps) {
+  const { id, title, content, post_images } = data ?? {};
 
   const [pending, setPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -43,8 +42,8 @@ function EditForm({ data }: EditFormProps) {
 
   return (
     <div>
-      <form className="flex flex-col gap-4" action={updatePost} ref={formRef}>
-        <input name="post-id" value={id} hidden readOnly />
+      <form className="flex flex-col gap-4" ref={formRef} {...rest}>
+        {id ? <input name="post-id" value={id} hidden readOnly /> : null}
         <input
           name="title"
           placeholder="제목을 입력하세요"

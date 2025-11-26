@@ -1,7 +1,7 @@
 import BackButton from "@/components/blog/_internal/BackButton";
 import EditForm from "@/components/blog/EditForm";
 import Icon from "@/components/ui/Icon";
-import { getPost } from "@/lib/blog/post.actions";
+import { getPost, updatePost } from "@/lib/blog/post.actions";
 
 type EditPageProps = {
   params: { id: string };
@@ -20,7 +20,7 @@ async function EditPage({ params }: EditPageProps) {
           <Icon name="back" size={16} />
         </BackButton>
       </div>
-      <EditForm data={post} />
+      <EditForm data={post} action={updatePost} />
     </main>
   );
 }

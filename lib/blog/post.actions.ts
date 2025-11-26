@@ -5,7 +5,7 @@ import { BlogPostItem, PostImage } from "@/types/blog";
 import { createClientSupabase } from "@/utils/supabase/client";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { randomUUID } from "crypto";
-import { revalidatePath } from "next/cache";
+import { cacheTag, revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 // ==================== 내부 타입 ====================
@@ -36,6 +36,8 @@ export async function getPosts(): Promise<BlogPostItem[]> {
 // 단일 게시글 조회
 export async function getPost(id: string): Promise<BlogPostItem> {
   "use cache";
+
+  cacheTag(`post-${id}`);
 
   const supabase = createClientSupabase();
   const { data, error } = await supabase
@@ -176,6 +178,7 @@ export async function updatePost(formData: FormData) {
   }
 
   revalidatePath("/blog");
+  revalidateTag(`post-${postId}`, {});
   redirect("/blog");
 }
 
