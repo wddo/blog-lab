@@ -37,26 +37,10 @@ function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
 
   // 슬롯 증가
   const incrementSlot = () => {
-    if (slots.length < maxImages) {
-      setSlots((prev) => [
-        ...prev,
-        {
-          // 마지막 슬롯 "이미지 업로드" 슬롯 추가
-          id: crypto.randomUUID(),
-          name: undefined,
-        },
-      ]);
-    }
-  };
-
-  // 슬롯 감소
-  const decrementSlot = (index: number) => {
     setSlots((prev) => {
       const newSlots = [...prev];
-      newSlots.splice(index, 1);
 
-      // 마지막 슬롯 제거 시 "이미지 업로드" 슬롯 추가
-      if (newSlots.length - 1 === maxImages) {
+      if (newSlots.length < maxImages) {
         newSlots.push({
           id: crypto.randomUUID(),
           name: undefined,
@@ -67,10 +51,23 @@ function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
     });
   };
 
-  const handleFileSelected = (index: number) => {
-    if (index === slots.length - 1) {
-      incrementSlot();
-    }
+  // 슬롯 감소
+  const decrementSlot = (index: number) => {
+    setSlots((prev) => {
+      const newSlots = [...prev.filter(({ name }) => name !== undefined)];
+      newSlots.splice(index, 1);
+
+      newSlots.push({
+        id: crypto.randomUUID(),
+        name: undefined,
+      });
+
+      return newSlots;
+    });
+  };
+
+  const handleFileSelected = () => {
+    incrementSlot();
   };
 
   const handleDelete = (index: number) => {
@@ -98,7 +95,7 @@ function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
             key={slot.id} // ui 에서 이미지 삭제하고 추가하는 과정에서 충돌을 방지하기 위해 항상 고유 ID 사용
             disabled={disabled}
             src={slot.name}
-            onFileSelected={() => handleFileSelected(index)}
+            onFileSelected={handleFileSelected}
             onDelete={() => handleDelete(index)}
           />
         ))}

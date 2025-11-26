@@ -55,7 +55,7 @@ function ImageInput({
 
   return (
     <div className="relative" {...props}>
-      {preview ? (
+      {preview && !disabled ? (
         <div className="absolute top-[-8px] right-[-8px] z-1">
           <Button
             variant="outline"
@@ -67,11 +67,15 @@ function ImageInput({
         </div>
       ) : null}
       <div
-        className={`bg-tertiary hover:border-secondary text-secondary relative aspect-4/3 min-w-[100px] cursor-pointer gap-2 overflow-hidden rounded-md border border-transparent ${className}`}
+        className={`${
+          disabled
+            ? `opacity-50 hover:border-transparent`
+            : `hover:border-secondary`
+        } bg-tertiary text-secondary relative aspect-4/3 min-w-[100px] gap-2 overflow-hidden rounded-md border-2 border-transparent ${className}`}
       >
         <label
           htmlFor={id}
-          className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2"
+          className={`flex h-full w-full flex-col items-center justify-center gap-2 ${disabled ? `cursor-default` : `cursor-pointer`}`}
         >
           {preview ? (
             <div className="relative h-full w-full">
