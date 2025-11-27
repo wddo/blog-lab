@@ -2,16 +2,15 @@
 
 import { getUser } from "@/lib/auth/auth.actions";
 import { Comment } from "@/types/blog";
-import { createClientSupabase } from "@/utils/supabase/client";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 // ==================== 조회 ====================
 
 export async function getComments(postId: string): Promise<Comment[]> {
-  "use cache";
+  "use cache: private";
 
-  const supabase = createClientSupabase();
+  const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from("comments")
     .select("*")

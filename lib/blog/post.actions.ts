@@ -2,7 +2,6 @@
 
 import { getUser } from "@/lib/auth/auth.actions";
 import { BlogPostItem, PostImage } from "@/types/blog";
-import { createClientSupabase } from "@/utils/supabase/client";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { randomUUID } from "crypto";
 import { cacheTag, revalidatePath, revalidateTag } from "next/cache";
@@ -11,9 +10,9 @@ import { redirect } from "next/navigation";
 // ==================== 조회 ====================
 
 export async function getPosts(): Promise<BlogPostItem[]> {
-  "use cache";
+  "use cache: private";
 
-  const supabase = createClientSupabase();
+  const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from("posts")
     .select("*, post_images(*)")
@@ -28,11 +27,11 @@ export async function getPosts(): Promise<BlogPostItem[]> {
 
 // 단일 게시글 조회
 export async function getPost(id: string): Promise<BlogPostItem> {
-  "use cache";
+  "use cache: private";
 
   cacheTag(`post-${id}`);
 
-  const supabase = createClientSupabase();
+  const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from("posts")
     .select("*, post_images(*)")
