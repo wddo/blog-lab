@@ -8,13 +8,6 @@ import { randomUUID } from "crypto";
 import { cacheTag, revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
-// ==================== 내부 타입 ====================
-
-/**
- * DB 조회 시 사용하는 post_images 테이블 타입 (id 포함)
- */
-type PostImageRow = PostImage & { id: string };
-
 // ==================== 조회 ====================
 
 export async function getPosts(): Promise<BlogPostItem[]> {
@@ -136,7 +129,7 @@ export async function updatePost(formData: FormData) {
   const { data: postImageColumns } = (await supabase
     .from("post_images")
     .select("*")
-    .eq("post_id", postId)) as { data: PostImageRow[] | null };
+    .eq("post_id", postId)) as { data: PostImage[] | null };
 
   // 새로 업로드할 파일명 목록
   const validImages = files.filter((file) => file?.size > 0);
@@ -219,7 +212,7 @@ export async function deletePost(postId: string) {
 async function createPostImagesData(
   postId: string,
   files: File[],
-): Promise<PostImage[]> {
+): Promise<Omit<PostImage, "id">[]> {
   const validImages = files.filter((file) => file?.size > 0);
 
   if (validImages.length === 0) {
