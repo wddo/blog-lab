@@ -14,14 +14,9 @@ export const signUpNewUser = async (formData: FormData) => {
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      emailRedirectTo: "/blog",
-    },
   });
 
-  if (!error) {
-    redirect("/login");
-  } else {
+  if (error) {
     throw new Error(error.message);
   }
 };
@@ -38,9 +33,7 @@ export const signInWithEmail = async (formData: FormData) => {
     password,
   });
 
-  if (!error) {
-    redirect("/blog");
-  } else {
+  if (error) {
     throw new Error(error.message);
   }
 };
@@ -68,4 +61,3 @@ export const getUser = async () => {
 
   return data.user as User;
 };
-

@@ -3,7 +3,7 @@ import EditForm from "@/components/blog/EditForm";
 import Icon from "@/components/ui/Icon";
 import { createPost } from "@/lib/blog/post.actions";
 
-function WritePage() {
+async function WritePage() {
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-4 p-4">
       <div className="flex items-center gap-2">

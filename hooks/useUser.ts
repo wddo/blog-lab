@@ -1,9 +1,9 @@
 "use client";
 
-import { UserContext } from "@/providers/UserProvider";
+import { UserContext, UserContextType } from "@/providers/UserProvider";
 import { useContext } from "react";
 
-export function useUser() {
+export function useUser(): UserContextType {
   const context = useContext(UserContext);
 
   if (context === undefined) {

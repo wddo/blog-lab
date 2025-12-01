@@ -103,22 +103,23 @@ function CommentItem({ comment }: CommentItemProps) {
           </div>
         </div>
         {author === comment.author && !showEdit ? (
-          <button
-            type="button"
-            onClick={handleEditClick}
-            className="text-secondary hover:bg-secondary-hover flex items-center justify-center rounded-md p-2 text-xs"
-          >
-            <Icon name="pencil" size={16} title="수정" />
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={handleEditClick}
+              className="text-secondary hover:bg-secondary-hover flex items-center justify-center rounded-md p-2 text-xs"
+            >
+              <Icon name="pencil" size={16} title="수정" />
+            </button>
+            <button
+              type="button"
+              onClick={handleDeleteClick}
+              className="text-secondary hover:bg-secondary-hover flex items-center justify-center rounded-md p-2 text-xs"
+            >
+              <Icon name="trash" size={16} title="삭제" />
+            </button>
+          </>
         ) : null}
-
-        <button
-          type="button"
-          onClick={handleDeleteClick}
-          className="text-secondary hover:bg-secondary-hover flex items-center justify-center rounded-md p-2 text-xs"
-        >
-          <Icon name="trash" size={16} title="삭제" />
-        </button>
       </li>
 
       <DialogModal
