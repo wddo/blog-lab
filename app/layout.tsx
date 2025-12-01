@@ -1,6 +1,8 @@
+import AuthGuard from "@/components/auth/AuthGuard";
+import UserProvider from "@/providers/UserProvider";
 import type { Metadata } from "next";
 import { Noto_Sans_KR, Roboto } from "next/font/google";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -26,7 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.variable} ${notoSansKr.variable}`}>
-        {children}
+        <UserProvider>
+          <Suspense fallback={null}>
+            <AuthGuard />
+          </Suspense>
+          {children}
+        </UserProvider>
       </body>
     </html>
   );

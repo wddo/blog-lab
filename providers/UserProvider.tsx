@@ -4,7 +4,7 @@ import { createClientSupabase } from "@/utils/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 
-type UserContextType = {
+export type UserContextType = {
   user: User | null;
   author: string | undefined;
 };
@@ -14,16 +14,24 @@ export const UserContext = createContext<UserContextType>({
   author: undefined,
 });
 
-type UserProviderProps = PropsWithChildren & {
-  initialUser?: User | null;
-};
+type UserProviderProps = PropsWithChildren;
 
-function UserProvider({ children, initialUser }: UserProviderProps) {
-  const [user, setUser] = useState<User | null>(initialUser ?? null);
+/**
+ * 사용자 인증 상태를 제공하는 Context Provider
+ * - 인증 상태 관리만 담당
+ * - 리다이렉트 로직은 AuthGuard에서 처리
+ */
+function UserProvider({ children }: UserProviderProps) {
+  const [user, setUser] = useState<User | null>(null);
   const author = user?.email?.split("@")[0];
 
   useEffect(() => {
     const supabase = createClientSupabase();
+
+    // 초기 인증 상태 설정
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
 
     // 실시간 인증 상태 구독
     const {
