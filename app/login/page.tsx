@@ -3,16 +3,16 @@
 import Button from "@/components/ui/button";
 import { signInWithEmail } from "@/lib/auth/auth.actions";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const referrer = searchParams.get("referrer") || "/blog";
+  const pathname = usePathname();
 
   const handleSignInWithEmail = async (formData: FormData) => {
     await signInWithEmail(formData);
-    router.replace(referrer);
+
+    router.replace(pathname); // middleware 에서 처리하도록
   };
 
   return (
@@ -20,8 +20,6 @@ function LoginPage() {
       <h1 className="mb-6 text-2xl font-bold">로그인</h1>
 
       <form className="space-y-4" action={handleSignInWithEmail}>
-        <input type="hidden" name="referrer" value={referrer} />
-
         <div className="flex flex-col gap-2">
           <label htmlFor="email" className="text-sm font-medium">
             Email
