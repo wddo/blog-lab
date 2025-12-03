@@ -27,9 +27,7 @@ async function BlogItem({ item }: BlogItemProps) {
   const handleDelete = async () => {
     "use server";
 
-    await deletePost(
-      id
-    );
+    await deletePost(id);
   };
 
   const isUser = await checkUser();
