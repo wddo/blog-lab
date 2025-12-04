@@ -58,3 +58,4 @@ blog-lab/
 - [x] 이미지 업로드 기능 구현
 - [x] revalidatePath를 통한 캐시 무효화
 - [x] revalidateTag를 통한 특정 캐시 무효화
+- [x] 검색 기능 추가

@@ -1,5 +1,6 @@
 import BlogList from "@/components/blog/BlogList";
 import Header from "@/components/layout/Header";
+import Search from "@/components/layout/Search";
 import Button from "@/components/ui/button";
 import Icon from "@/components/ui/Icon";
 import { getUser } from "@/lib/auth/auth.actions";
@@ -13,8 +14,14 @@ async function getCachedTime() {
   return new Date().toLocaleString(); // 캐싱되어 새로고침에 변경되지 않음
 }
 
-async function BlogPage() {
-  const posts = await getPosts();
+type BlogPageProps = {
+  searchParams: Promise<{ keyword: string }>;
+};
+
+async function BlogPage({ searchParams }: BlogPageProps) {
+  const { keyword } = await searchParams;
+
+  const posts = await getPosts(keyword);
   const user = await getUser();
   const cachedTime = await getCachedTime();
 
@@ -26,6 +33,7 @@ async function BlogPage() {
 
   return (
     <div className="has-[#footer-buttons]:pb-18">
+      <Search keyword={keyword} />
       <main className="p-4">
         <div className="flex flex-col space-y-4">
           <h1 className="flex-1 text-3xl font-bold tracking-tight">Blog</h1>
@@ -51,11 +59,7 @@ async function BlogPage() {
                 <span className="text-sm">새 글 작성</span>
               </div>
             </Link>
-            <Button
-              type="submit"
-              variant="outline"
-              formAction={handleRefresh}
-            >
+            <Button type="submit" variant="outline" formAction={handleRefresh}>
               <Icon name="refresh" size={16} />
             </Button>
           </div>

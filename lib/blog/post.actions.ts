@@ -9,14 +9,18 @@ import { redirect } from "next/navigation";
 
 // ==================== 조회 ====================
 
-export async function getPosts(): Promise<BlogPostItem[]> {
+export async function getPosts(keyword?: string): Promise<BlogPostItem[]> {
   "use cache: private";
 
   const supabase = await createServerSupabase();
-  const { data, error } = await supabase
-    .from("posts")
-    .select("*, post_images(*)")
-    .order("created_at", { ascending: false });
+  let query = supabase.from("posts").select("*, post_images(*)");
+
+  if (keyword) {
+    // 검색 기능
+    query = query.textSearch("title", `'${keyword}'`);
+  }
+
+  const { data, error } = await query.order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(error.message);

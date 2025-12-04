@@ -15,7 +15,7 @@ const button = tv({
       secondary: "bg-neutral-100 text-neutral-900 hover:bg-neutral-200",
       outline:
         "border border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50",
-      none: "bg-transparent text-neutral-900 hover:bg-neutral-100",
+      none: "bg-transparent text-neutral-900 hover:bg-neutral-100 hover:bg-transparent",
     },
     size: {
       small: "text-sm",
