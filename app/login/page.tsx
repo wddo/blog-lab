@@ -1,30 +1,39 @@
 "use client";
 
 import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
 import { signInWithEmail } from "@/lib/auth/auth.actions";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 function LoginPage() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSignInWithEmail = async (formData: FormData) => {
     await signInWithEmail(formData);
 
-    router.replace(pathname); // middleware 에서 처리하도록
+    router.replace(`${pathname}?${searchParams.toString()}`); // middleware 에서 처리하도록
   };
+
+  // 페이지 마운트 시 폼 초기화
+  useEffect(() => {
+    formRef.current?.reset();
+  }, []);
 
   return (
     <div className="mx-auto max-w-md px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold">로그인</h1>
 
-      <form className="space-y-4" action={handleSignInWithEmail}>
+      <form className="space-y-4" action={handleSignInWithEmail} ref={formRef}>
         <div className="flex flex-col gap-2">
           <label htmlFor="email" className="text-sm font-medium">
             Email
           </label>
-          <input
+          <Input
             type="email"
             name="email"
             placeholder="your@email.com"
@@ -37,7 +46,7 @@ function LoginPage() {
           <label htmlFor="password" className="text-sm font-medium">
             Password
           </label>
-          <input
+          <Input
             type="password"
             name="password"
             placeholder="Password"
