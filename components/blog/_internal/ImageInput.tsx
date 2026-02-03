@@ -7,13 +7,15 @@ import Image from "next/image";
 import { ChangeEvent, HTMLAttributes, useEffect, useId, useState } from "react";
 
 type ImageInputProps = {
-  onFileSelected?: () => void;
+  onFileSelected?: (identifier: string, name: string) => void;
   onDelete?: () => void;
   disabled: boolean;
   src?: string;
+  identifier: string;
 } & HTMLAttributes<HTMLDivElement>;
 
 function ImageInput({
+  identifier,
   onFileSelected,
   onDelete,
   className = "",
@@ -21,7 +23,7 @@ function ImageInput({
   src,
   ...props
 }: ImageInputProps) {
-  const [previousImage, setPreviousImage] = useState<string | undefined>(src);
+  const [previousImage, _setPreviousImage] = useState<string | undefined>(src);
   const [preview, setPreview] = useState<string | undefined>(
     src ? `${STORAGE_BUCKET_URL}/${src}` : undefined,
   );
@@ -29,7 +31,7 @@ function ImageInput({
 
   const hancleDelete = () => {
     setPreview(undefined);
-    setPreviousImage(undefined);
+    //setPreviousImage(undefined);
     onDelete?.();
   };
 
@@ -38,8 +40,8 @@ function ImageInput({
 
     if (file) {
       setPreview(URL.createObjectURL(file));
-      setPreviousImage(undefined); // 기존 이미지 정보 제거
-      onFileSelected?.();
+      //setPreviousImage(undefined); // 기존 이미지 정보 제거
+      onFileSelected?.(identifier, file.name);
     }
   };
 

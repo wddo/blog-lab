@@ -20,6 +20,7 @@ type ImageUploadFromProps = {
 };
 
 function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
+  // 기존 데이터 정의
   const maxImages = 4;
   const length = Math.min((images?.length || 0) + 1, maxImages);
   const initialSlots = useCallback(
@@ -36,10 +37,14 @@ function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
   const [slots, setSlots] = useState<Slot[]>(initialSlots);
 
   // 슬롯 증가
-  const incrementSlot = () => {
+  const incrementSlot = (identifier: string, name: string) => {
     setSlots((prev) => {
-      const newSlots = [...prev];
+      const newSlots = prev.map((slot) => {
+        // 새로 추가한 이미지 name 업데이트
+        return slot.id === identifier ? { ...slot, name } : slot;
+      });
 
+      // 이미지 최대 4장 이하일 때  "이미지 업로드" 슬롯 추가
       if (newSlots.length < maxImages) {
         newSlots.push({
           id: crypto.randomUUID(),
@@ -54,9 +59,11 @@ function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
   // 슬롯 감소
   const decrementSlot = (index: number) => {
     setSlots((prev) => {
+      // "이미지 업로드" 제외한 슬롯 배열 생성
       const newSlots = [...prev.filter(({ name }) => name !== undefined)];
       newSlots.splice(index, 1);
 
+      // "이미지 업로드" 슬롯 추가
       newSlots.push({
         id: crypto.randomUUID(),
         name: undefined,
@@ -66,12 +73,12 @@ function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
     });
   };
 
-  const handleFileSelected = () => {
-    incrementSlot();
+  const handleFileSelected = (identifier: string, name: string) => {
+    incrementSlot(identifier, name);
   };
 
-  const handleDelete = (index: number) => {
-    decrementSlot(index);
+  const handleDelete = (identifier: string) => {
+    decrementSlot(slots.findIndex((slot) => slot.id === identifier));
   };
 
   // 부모 컴포넌트에서 호출할 수 있는 reset 함수
@@ -93,10 +100,11 @@ function ImageUploadForm({ images, disabled, ref }: ImageUploadFromProps) {
         {slots.map((slot, index) => (
           <ImageInput
             key={slot.id} // ui 에서 이미지 삭제하고 추가하는 과정에서 충돌을 방지하기 위해 항상 고유 ID 사용
+            identifier={slot.id}
             disabled={disabled}
             src={slot.name}
             onFileSelected={handleFileSelected}
-            onDelete={() => handleDelete(index)}
+            onDelete={() => handleDelete(slot.id)}
           />
         ))}
       </div>
